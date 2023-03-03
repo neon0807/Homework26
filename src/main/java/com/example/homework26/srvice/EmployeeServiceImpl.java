@@ -1,8 +1,6 @@
 package com.example.homework26.srvice;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import com.example.homework26.dao.EmployeeRepo;
 import org.springframework.stereotype.Service;
 import com.example.homework26.entity.Employee;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,45 +10,37 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    private SessionFactory sessionFactory;
-
-    public EmployeeServiceImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private EmployeeRepo employeeRepo;
+    public EmployeeServiceImpl(EmployeeRepo employeeRepo) {
+        this.employeeRepo = employeeRepo;
     }
     @Override
     @Transactional
     public List<Employee> getEmployee() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("From Employee ").list();
+       return employeeRepo.findAll();
     }
 
     @Override
     @Transactional
     public Employee getEmployeeById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(Employee.class, id);
+        return employeeRepo.findById(id).get();
     }
 
     @Override
     @Transactional
     public void addEmployee(Employee employee) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(employee);
+        employeeRepo.save(employee);
     }
 
     @Override
     @Transactional
     public void updateEmployee(Employee employee) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(employee);
+        employeeRepo.save(employee);
     }
 
     @Override
     @Transactional
     public void deleteEmployee(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Employee> query = session.createQuery("delete from Employee where id=:id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        employeeRepo.deleteById(id);
     }
 }
