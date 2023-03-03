@@ -1,5 +1,6 @@
 package com.example.homework26.srvice;
 
+import com.example.homework26.dao.EmployeeDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -12,45 +13,38 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    private SessionFactory sessionFactory;
+    private EmployeeDAO employeeDAO;
 
-    public EmployeeServiceImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public EmployeeServiceImpl(EmployeeDAO employeeDAO) {
+        this.employeeDAO = employeeDAO;
     }
     @Override
     @Transactional
     public List<Employee> getEmployee() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("From Employee ").list();
+        return employeeDAO.getEmployee();
     }
 
     @Override
     @Transactional
     public Employee getEmployeeById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(Employee.class, id);
+        return employeeDAO.getEmployeeById(id);
     }
 
     @Override
     @Transactional
     public void addEmployee(Employee employee) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(employee);
+        employeeDAO.addEmployee(employee);
     }
 
     @Override
     @Transactional
     public void updateEmployee(Employee employee) {
-        Session session = sessionFactory.getCurrentSession();
-        session.update(employee);
+        employeeDAO.updateEmployee(employee);
     }
 
     @Override
     @Transactional
     public void deleteEmployee(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        Query<Employee> query = session.createQuery("delete from Employee where id=:id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        employeeDAO.deleteEmployee(id);
     }
 }
